@@ -29,6 +29,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body
         className={`${inter.variable} ${outfit.variable} antialiased font-sans`}
+        suppressHydrationWarning
       >
         <Preloader />
         <SmoothScroll>{children}</SmoothScroll>

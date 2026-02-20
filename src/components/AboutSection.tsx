@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const skills = [
@@ -16,6 +16,9 @@ const outerOrbit = skills.slice(6, 12);
 export default function AboutSection() {
   const containerRef = useRef<HTMLElement>(null);
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -24,6 +27,10 @@ export default function AboutSection() {
 
   const rotate1 = useTransform(scrollYProgress, [0, 1], [0, 360]);
   const rotate2 = useTransform(scrollYProgress, [0, 1], [360, 0]);
+
+  // Pre-compute counter-rotations at the top level (Rules of Hooks)
+  const counterRotate1 = useTransform(rotate1, (r) => -r);
+  const counterRotate2 = useTransform(rotate2, (r) => -r);
 
   return (
     <section 
@@ -68,7 +75,10 @@ export default function AboutSection() {
             <div className="absolute top-1/2 -left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen" />
           </motion.div>
 
-          {/* Right: Skill Orbit */}
+          {/* Right: Skill Orbit — rendered client-only to avoid SSR/CSR style mismatch */}
+          {!mounted ? (
+            <div className="relative h-[400px] w-[400px] md:h-[500px] md:w-[500px] mx-auto" />
+          ) : (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -98,7 +108,7 @@ export default function AboutSection() {
                     }}
                   >
                     <motion.div 
-                      style={{ rotate: useTransform(rotate1, r => -r) }} // Counter-rotate to keep text upright
+                      style={{ rotate: counterRotate1 }} // Counter-rotate to keep text upright
                       className="px-4 py-2 bg-card/80 backdrop-blur-md border border-border/50 rounded-full text-sm font-medium hover:border-primary hover:text-primary hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all cursor-crosshair"
                       onMouseEnter={() => setHoveredSkill(skill)}
                       onMouseLeave={() => setHoveredSkill(null)}
@@ -127,7 +137,7 @@ export default function AboutSection() {
                     }}
                   >
                     <motion.div 
-                      style={{ rotate: useTransform(rotate2, r => -r) }} // Counter-rotate to keep text upright
+                      style={{ rotate: counterRotate2 }} // Counter-rotate to keep text upright
                       className="px-4 py-2 bg-card/80 backdrop-blur-md border border-border/50 rounded-full text-sm font-medium hover:border-secondary-foreground hover:text-secondary-foreground hover:shadow-[0_0_15px_rgba(167,139,250,0.5)] transition-all cursor-crosshair"
                       onMouseEnter={() => setHoveredSkill(skill)}
                       onMouseLeave={() => setHoveredSkill(null)}
@@ -140,6 +150,7 @@ export default function AboutSection() {
             </motion.div>
 
           </motion.div>
+          )}
         </div>
       </div>
     </section>
