@@ -3,11 +3,32 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const puns = [
+  "> Turning bugs into features...",
+  "> Compiling caffeine into code...",
+  "> Git commit, push, and pray...",
+  "> RM -RF /ing the competition...",
+  "> Finding the missing semicolon...",
+  "> Blaming the compiler...",
+  "> Restarting the router...",
+  "> Waiting for npm install...",
+  "> It compiles on my machine...",
+  "> Updating dependencies...",
+  "> Exiting VIM...",
+  "> Downloading more RAM...",
+  "> Aligning the divs...",
+  "> Trying to read my own code...",
+  "> Pressing Ctrl+S out of paranoia..."
+];
+
 export default function Preloader() {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [pun, setPun] = useState("> Loading...");
 
   useEffect(() => {
+    setPun(puns[Math.floor(Math.random() * puns.length)]);
+    
     // Lock body scroll while loading
     document.body.style.overflow = "hidden";
 
@@ -59,14 +80,14 @@ export default function Preloader() {
 
           <div className="relative z-10 flex flex-col items-center max-w-sm w-full px-8">
             {/* Logo / Name Reveal */}
-            <div className="overflow-hidden mb-8 h-12 flex items-center justify-center">
+            <div className="mb-8 flex items-center justify-center overflow-hidden py-1">
               <motion.h1 
-                initial={{ y: 50, opacity: 0 }}
+                initial={{ y: "100%", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-2xl md:text-3xl font-bold font-mono tracking-tight text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary-foreground"
+                transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+                className="text-xl md:text-3xl font-bold font-mono tracking-tight text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary-foreground text-center"
               >
-                &gt; Turning bugs into features...
+                {pun}
               </motion.h1>
             </div>
 
