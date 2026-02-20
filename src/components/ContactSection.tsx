@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Phone, Github, Linkedin, ArrowRight } from "lucide-react";
+import { Mail, Phone, Github, Linkedin, ArrowRight, Instagram } from "lucide-react";
 
 export default function ContactSection() {
   return (
     <section className="py-32 w-full bg-background relative overflow-hidden flex items-center justify-center" id="contact">
       {/* Ambient background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[400px] bg-gradient-to-r from-primary/20 to-secondary-foreground/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[400px] bg-linear-to-r from-primary/20 to-secondary-foreground/20 rounded-full blur-[120px] pointer-events-none" />
       
       <div className="container px-4 md:px-6 relative z-10">
         <motion.div
@@ -59,14 +59,23 @@ export default function ContactSection() {
               <Linkedin className="w-6 h-6" />
               <span className="sr-only">LinkedIn</span>
             </a>
+            <a 
+              href="http://instagram.com/itz_s13_/" 
+              target="_blank" 
+              rel="noreferrer"
+              className="w-14 h-14 rounded-full bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 text-muted-foreground"
+            >
+              <Instagram className="w-6 h-6" />
+              <span className="sr-only">Instagram</span>
+            </a>
           </div>
 
           {/* Animated Gradient Border Button */}
           <div className="relative inline-block group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary via-secondary-foreground to-primary rounded-full blur opacity-50 group-hover:opacity-100 animate-pulse transition duration-1000 group-hover:duration-200" />
-            <button className="relative px-8 py-4 bg-background border border-border/50 text-foreground font-semibold rounded-full flex items-center gap-3 transition-colors hover:text-primary">
+            <div className="absolute -inset-1 bg-linear-to-r from-primary via-secondary-foreground to-primary rounded-full blur opacity-50 group-hover:opacity-100 animate-pulse transition duration-1000 group-hover:duration-200" />
+            <a href="mailto:sambhubaburaj513@gmail.com" className="relative px-8 py-4 bg-background border border-border/50 text-foreground font-semibold rounded-full inline-flex items-center gap-3 transition-colors hover:text-primary">
               Let's Build Something Together <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </a>
           </div>
         </motion.div>
       </div>

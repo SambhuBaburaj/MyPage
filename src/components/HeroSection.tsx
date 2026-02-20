@@ -78,14 +78,11 @@ export default function HeroSection() {
           transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
           className="flex flex-col sm:flex-row gap-4 mt-12"
         >
-          <Button size="lg" className="rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:scale-105">
-            View Projects
+          <Button size="lg" className="rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:scale-105" asChild>
+            <a href="#experience">View Impact</a>
           </Button>
-          <Button size="lg" variant="outline" className="rounded-full bg-background/50 backdrop-blur-md border-border/50 hover:bg-secondary/50 transition-all hover:scale-105">
-            Download Resume
-          </Button>
-          <Button size="lg" variant="ghost" className="rounded-full hover:bg-white/5 transition-all hover:scale-105">
-            Contact Me
+          <Button size="lg" variant="ghost" className="rounded-full hover:bg-white/5 transition-all hover:scale-105 border border-border/10" asChild>
+            <a href="#contact">Contact Me</a>
           </Button>
         </motion.div>
       </div>
