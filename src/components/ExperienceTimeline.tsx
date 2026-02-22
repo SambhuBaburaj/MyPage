@@ -2,210 +2,149 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
-import { MapPin, Briefcase, Calendar } from "lucide-react";
 
-const impacts = [
+const experiences = [
   {
-    id: 1,
     company: "Lifology",
-    location: "Thiruvananthapuram, Kerala",
+    location: "Thiruvananthapuram",
     role: "Full Stack Developer",
-    period: "May 2024 – Present",
-    description: (
+    duration: "May 2024 – Present",
+    content: (
       <>
-        <p className="mb-4">
-          At Lifology, I architected and delivered the entire frontend ecosystem for a large-scale coach-student platform used for assessments, communication, and performance tracking.
-        </p>
-        <p className="mb-4">
-          I engineered a highly dynamic dashboard powered by TanStack Table and optimized GraphQL queries to handle complex filtering and real-time data updates with precision.
-        </p>
-        <p className="mb-4">
-          One of my key contributions was building a real-time chat system using Centrifugal — supporting unread counts, delivery state tracking, and smooth UX animations.
-        </p>
-        <p className="mb-4">
-          I also designed and implemented an offline-compatible FACE & MIO assessment system, backed by a heartbeat API that ensured seamless syncing once connectivity was restored.
-        </p>
         <p>
-          Beyond frontend ownership, I contributed to backend logic and multi-login architecture, enabling secure access for both students and coaches.
+          At Lifology, I architected and delivered the frontend foundation for a scalable coach-student platform powering real-time communication, performance dashboards, and assessment systems.
+        </p>
+        <p className="mt-4">
+          Engineered dynamic dashboards using TanStack and optimized GraphQL queries for complex filtering scenarios. Designed and implemented a real-time chat infrastructure with message state tracking and delivery management.
+        </p>
+        <p className="mt-4">
+          Built an offline-compatible assessment engine backed by a heartbeat sync API to ensure seamless data reconciliation. Contributed to backend authentication flows and multi-role access architecture.
         </p>
       </>
     ),
-    tags: ["React", "Next.js", "GraphQL", "Centrifugal", "TanStack"],
-    color: "from-blue-600/20 to-indigo-600/20",
-    glowColor: "rgba(79, 70, 229, 0.15)",
+    tech: ["Next.js", "GraphQL", "TanStack", "WebSockets"],
+    color: "from-blue-500/10 to-transparent",
+    align: "left",
   },
   {
-    id: 2,
     company: "Bestway Exims",
-    location: "Malappuram, Kerala",
-    role: "Team Lead - Health Care Super App",
-    period: "2023 – 2024",
-    description: (
+    location: "Malappuram",
+    role: "Team Lead",
+    duration: "2023 – 2024",
+    content: (
       <>
-        <p className="mb-4">
-          At Bestway Exims, I led a team of four developers to deliver a fully functional healthcare admin panel within a 15-day sprint cycle.
-        </p>
-        <p className="mb-4">
-          I architected dashboards for order tracking, payment monitoring, and advanced user analytics — ensuring real-time operational visibility.
-        </p>
-        <p className="mb-4">
-          Integrated Firebase for live notifications and activity tracking for doctors, and connected the Zoom API to enable seamless virtual consultations.
-        </p>
         <p>
-          Balanced leadership and engineering responsibilities, ensuring both code quality and timely execution under tight deadlines.
+          Led a team of 4 developers to deliver critical business applications under tight deadlines.
+        </p>
+        <p className="mt-4">
+          Successfully delivered a comprehensive admin panel within a 15-day sprint. Integrated real-time notifications via Firebase and built Zoom API integrations for virtual operations.
+        </p>
+        <p className="mt-4">
+          Developed a specialized healthcare order analytics dashboard providing actionable insights.
         </p>
       </>
     ),
-    tags: ["Team Leadership", "Real-time Systems", "API Integrations", "Agile Delivery"],
-    color: "from-emerald-600/20 to-teal-600/20",
-    glowColor: "rgba(16, 185, 129, 0.15)",
+    tech: ["React", "Firebase", "Node.js", "Zoom API"],
+    color: "from-violet-500/10 to-transparent",
+    align: "right",
   },
   {
-    id: 3,
     company: "Packapeer Academy",
     location: "Ernakulam",
-    role: "Full Stack Development Intern",
-    period: "Previous",
-    description: (
+    role: "Full Stack Intern (MERN Stack)",
+    duration: "2022 – 2023",
+    content: (
       <>
-        <p className="mb-4">
-          Completed an intensive MERN stack internship, designing and deploying multiple scalable, full-stack applications from scratch to master end-to-end development.
+        <p>
+          Completed an intensive full-stack engineering internship focused on building production-grade applications using the MERN stack.
         </p>
-        <p className="mb-4">
-          Engineered a complete production-ready e-commerce platform featuring RESTful APIs, cart functionality, integrated gateways (PayPal/Razorpay), and a comprehensive admin analytics dashboard.
+        <p className="mt-4">
+          Designed and deployed a complete e-commerce platform with payment integration, admin analytics, and AWS deployment.
         </p>
-        <p className="mb-4">
-          Architected a real-time social media application using Socket.IO for live chat, JWT for secure routing, and a scalable MongoDB schema to support media uploads and engagement features.
+        <p className="mt-4">
+          Built a fully interactive social networking platform featuring JWT authentication, real-time messaging with Socket.IO, media uploads, and dynamic user interaction systems. This experience laid the foundation for scalable backend design, real-time architecture, and production deployment workflows.
         </p>
-      
       </>
     ),
-    tags: ["MERN Stack", "Socket.IO", "AWS EC2", "RESTful APIs", "Payment Gateways"],
-    color: "from-violet-600/20 to-fuchsia-600/20",
-    glowColor: "rgba(139, 92, 246, 0.15)",
+    tech: ["MongoDB", "Express", "React", "Node.js", "AWS", "Socket.IO"],
+    color: "from-indigo-500/10 to-transparent",
+    align: "left",
   },
 ];
 
-export default function ExperienceTimeline() {
-  const containerRef = useRef<HTMLElement>(null);
+const ExperienceBlock = ({ 
+  exp, 
+  index 
+}: { 
+  exp: typeof experiences[0], 
+  index: number 
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
+    target: ref,
+    offset: ["start end", "center center"],
   });
 
-  // Global parallax for background elements
-  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const xOffset = exp.align === "left" ? -50 : 50;
+  
+  const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const x = useTransform(scrollYProgress, [0, 1], [xOffset, 0]);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   return (
-    <section 
-      ref={containerRef} 
-      className="relative min-h-screen w-full bg-[#050810] py-32 border-t border-border/10 overflow-hidden"
-      id="experience"
+    <div 
+      ref={ref} 
+      className={`relative min-h-[60vh] flex items-center w-full overflow-hidden py-24 border-t border-zinc-900 ${exp.align === "left" ? "justify-start" : "justify-end"}`}
     >
-      {/* Subtle parallax background grid/grain could go here */}
       <motion.div 
-        style={{ y: yBg }}
-        className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none"
-      >
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-secondary-foreground/5 rounded-full blur-[150px]" />
-      </motion.div>
-
-      <div className="container px-4 md:px-6 z-10 mx-auto max-w-6xl relative">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-24"
+        className={`absolute inset-0 bg-linear-to-b ${exp.color} -z-10`}
+        style={{ y: backgroundY }}
+      />
+      
+      <div className="container mx-auto px-6 relative z-10">
+        <motion.div 
+          style={{ opacity, x }}
+          className={`max-w-3xl flex flex-col gap-6 ${exp.align === "right" ? "ml-auto" : ""}`}
         >
-          <h2 className="text-4xl md:text-6xl font-bold font-outfit text-foreground mb-6 tracking-tight">
-            Where I've Built <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-secondary-foreground">Impact</span>
-          </h2>
-          <div className="h-1 w-24 bg-primary/50 rounded-full mx-auto" />
+          <div className="flex flex-col gap-2 relative">
+            <span className="text-sm font-mono tracking-widest text-zinc-500 uppercase">{exp.duration} &mdash; {exp.location}</span>
+            <h3 className="text-5xl md:text-7xl font-bold tracking-tight text-white mix-blend-difference">{exp.company}</h3>
+            <h4 className="text-2xl md:text-3xl font-light text-zinc-300">{exp.role}</h4>
+          </div>
+
+          <div className="h-px w-full max-w-sm bg-zinc-800" />
+          
+          <div className="text-lg text-zinc-400 leading-relaxed max-w-2xl">
+            {exp.content}
+          </div>
+
+          <div className="flex flex-wrap gap-3 mt-6">
+            {exp.tech.map((t, i) => (
+              <span key={i} className="px-4 py-2 text-sm rounded-full border border-zinc-700 bg-zinc-900/50 text-zinc-300">
+                {t}
+              </span>
+            ))}
+          </div>
         </motion.div>
+      </div>
+    </div>
+  );
+};
 
-        <div className="flex flex-col gap-16 md:gap-24 relative">
-          {/* Central progress accent line */}
-          <div className="absolute left-8 md:left-12 top-0 bottom-0 w-[2px] bg-linear-to-b from-primary/0 via-primary/20 to-primary/0" />
+export default function ExperienceTimeline() {
+  return (
+    <section className="relative w-full flex flex-col pt-32 pb-16 bg-background" id="experience">
+      <div className="container mx-auto px-6 mb-24">
+        <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mix-blend-difference">
+          Where I Built <span className="text-violet-500">Impact.</span>
+        </h2>
+      </div>
 
-          {impacts.map((impact, index) => {
-            const isEven = index % 2 === 0;
-            return (
-              <motion.div 
-                key={impact.id}
-                initial={{ opacity: 0, x: isEven ? -50 : 50, y: 50 }}
-                whileInView={{ opacity: 1, x: 0, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                viewport={{ once: true, margin: "-100px" }}
-                className="relative group w-full"
-              >
-                {/* Visual marker connecting to the line */}
-                <div className="absolute left-8 md:left-12 top-10 -translate-x-1/2 w-4 h-4 rounded-full bg-background border-2 border-primary z-20 group-hover:bg-primary transition-colors duration-500 group-hover:shadow-[0_0_20px_rgba(59,130,246,1)]" />
-
-                <div className="ml-16 md:ml-24">
-                  <div 
-                    className="relative p-8 md:p-12 rounded-3xl bg-card/40 backdrop-blur-xl border border-border/40 hover:border-border/80 transition-all duration-700 hover:-translate-y-2"
-                    style={{
-                      boxShadow: `0 20px 40px -20px ${impact.glowColor}`
-                    }}
-                  >
-                    {/* Glowing background inside card */}
-                    <div className={`absolute inset-0 bg-linear-to-br ${impact.color} opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-3xl pointer-events-none`} />
-                    
-                    <div className="relative z-10 flex flex-col md:flex-row md:items-start gap-8 md:gap-12">
-                      
-                      {/* Meta Info Sidebar */}
-                      <div className="md:min-w-[280px] shrink-0">
-                        <h3 className="text-3xl md:text-4xl font-extrabold font-outfit text-foreground group-hover:text-primary transition-colors duration-500 mb-2 tracking-tight">
-                          {impact.company}
-                        </h3>
-                        
-                        <div className="flex flex-col gap-3 mt-6">
-                          <div className="flex items-center gap-2 text-muted-foreground font-medium bg-background/50 w-fit px-3 py-1.5 rounded-lg border border-border/20">
-                            <Briefcase size={16} className="text-primary" />
-                            <span>{impact.role}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-2 text-muted-foreground/80 text-sm pl-1">
-                            <MapPin size={16} />
-                            <span>{impact.location}</span>
-                          </div>
-                          
-                          <div className="flex items-center gap-2 text-muted-foreground/80 text-sm pl-1">
-                            <Calendar size={16} />
-                            <span>{impact.period}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Story Content */}
-                      <div className="flex-1 border-t md:border-t-0 md:border-l border-border/20 pt-8 md:pt-0 md:pl-8 lg:pl-12">
-                        <div className="text-muted-foreground text-lg leading-relaxed font-inter opacity-90 group-hover:opacity-100 transition-opacity">
-                          {impact.description}
-                        </div>
-
-                        <div className="flex flex-wrap gap-2 mt-10">
-                          {impact.tags.map(tag => (
-                            <Badge 
-                              key={tag} 
-                              variant="secondary" 
-                              className="bg-secondary/30 hover:bg-secondary/60 text-secondary-foreground font-mono transition-colors shadow-sm"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+      <div className="flex flex-col w-full">
+        {experiences.map((exp, idx) => (
+          <ExperienceBlock key={idx} exp={exp} index={idx} />
+        ))}
       </div>
     </section>
   );
