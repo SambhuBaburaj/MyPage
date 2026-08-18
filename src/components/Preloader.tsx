@@ -32,11 +32,18 @@ export default function Preloader() {
     // Lock body scroll while loading
     document.body.style.overflow = "hidden";
 
+    const finishLoading = () => {
+      setProgress(100);
+      setIsLoading(false);
+      document.body.style.overflow = "";
+    };
+
     // Simulate loading progress
     const duration = 2000; // 2 seconds total loading animation
     const interval = 20; // Update every 20ms
     const steps = duration / interval;
     let currentStep = 0;
+    const fallbackTimer = window.setTimeout(finishLoading, 3400);
 
     const timer = setInterval(() => {
       currentStep++;
@@ -50,14 +57,14 @@ export default function Preloader() {
         clearInterval(timer);
         // Add a small delay at 100% before triggering exit
         setTimeout(() => {
-          setIsLoading(false);
-          document.body.style.overflow = ""; // Restore scrolling
+          finishLoading();
         }, 400); 
       }
     }, interval);
 
     return () => {
       clearInterval(timer);
+      window.clearTimeout(fallbackTimer);
       document.body.style.overflow = "";
     };
   }, []);

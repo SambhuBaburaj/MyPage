@@ -7,6 +7,7 @@ import ContactSection from "@/components/ContactSection";
 import CustomCursor from "@/components/CustomCursor";
 import ScrollProgress from "@/components/ScrollProgress";
 import ParallaxEnvironment from "@/components/ParallaxEnvironment";
+import ScrollParallaxOverlay from "@/components/ScrollParallaxOverlay";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <ParallaxEnvironment />
       <CustomCursor />
       <ScrollProgress />
+      <ScrollParallaxOverlay />
 
       <div className="relative z-10">
         <HeroSection />
