@@ -1,51 +1,102 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Mail, Phone, Github, Linkedin, ArrowRight, Instagram } from "lucide-react";
+import { useRef } from "react";
 
 export default function ContactSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const headlineY = useTransform(scrollYProgress, [0, 1], [90, -70]);
+  const panelY = useTransform(scrollYProgress, [0, 1], [-20, 65]);
+  const gridY = useTransform(scrollYProgress, [0, 1], [-80, 110]);
+  const outlineY = useTransform(scrollYProgress, [0, 1], [180, -160]);
+  const ruleScale = useTransform(scrollYProgress, [0.12, 0.72], [0, 1]);
+
   return (
-    <section className="py-32 w-full bg-background relative overflow-hidden flex items-center justify-center" id="contact">
-      {/* Ambient background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-[400px] bg-linear-to-r from-primary/20 to-secondary-foreground/20 rounded-full blur-[120px] pointer-events-none" />
+    <section
+      ref={sectionRef}
+      className="relative flex min-h-[86svh] w-full items-center justify-center overflow-hidden parallax-surface py-32"
+      id="contact"
+    >
+      <motion.div
+        aria-hidden="true"
+        className="section-grid absolute inset-0 opacity-25"
+        style={{ y: gridY }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="absolute left-[-12vw] top-[12%] font-outfit text-[22vw] font-black uppercase leading-none tracking-normal text-outline text-transparent text-primary opacity-[0.06]"
+        style={{ y: outlineY }}
+      >
+        Hello
+      </motion.div>
       
-      <div className="container px-4 md:px-6 relative z-10">
+      <div className="container relative z-10 mx-auto grid max-w-7xl grid-cols-1 gap-14 px-4 md:px-6 lg:grid-cols-[1.12fr_0.88fr] lg:items-end">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="max-w-2xl mx-auto rounded-3xl bg-card/40 backdrop-blur-xl border border-border/50 p-8 md:p-12 text-center shadow-2xl"
+          style={{ y: headlineY }}
+          className="max-w-4xl"
         >
-          <h2 className="text-4xl md:text-5xl font-bold font-outfit text-foreground mb-4">
-            Let's Talk
+          <p className="mb-5 font-mono text-xs uppercase tracking-[0.34em] text-primary">
+            Contact
+          </p>
+          <h2 className="text-balance font-outfit text-6xl font-black uppercase leading-[0.86] tracking-normal text-foreground md:text-8xl lg:text-9xl">
+            Let&apos;s build the useful thing.
           </h2>
-          <p className="text-lg text-muted-foreground mb-10 font-inter">
-            I'm currently looking for new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
+
+          <motion.div
+            aria-hidden="true"
+            className="mt-10 h-px w-full max-w-2xl origin-left bg-linear-to-r from-primary via-secondary-foreground to-accent-foreground"
+            style={{ scaleX: ruleScale }}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 42 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-120px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          style={{ y: panelY }}
+          className="border-y border-border/70 py-8"
+        >
+          <p className="mb-10 text-pretty text-lg leading-8 text-muted-foreground">
+            I&apos;m currently looking for new opportunities. Whether you have a question or just want to say hi, my inbox is always open.
           </p>
 
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">
-            <a href="mailto:sambhubaburaj513@gmail.com" className="flex items-center gap-3 text-foreground hover:text-primary transition-colors text-lg font-medium group">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+          <div className="mb-12 grid gap-4">
+            <a href="mailto:sambhubaburaj513@gmail.com" className="group flex min-w-0 items-center gap-4 text-foreground transition-colors hover:text-primary">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border/80 bg-foreground/[0.03] transition-colors group-hover:bg-primary/15">
                 <Mail className="w-5 h-5 text-primary" />
               </div>
-              sambhubaburaj513@gmail.com
+              <span className="min-w-0 break-all text-base font-semibold md:text-lg">
+                sambhubaburaj513@gmail.com
+              </span>
             </a>
             
-            <a href="tel:+919746369882" className="flex items-center gap-3 text-foreground hover:text-primary transition-colors text-lg font-medium group">
-              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+            <a href="tel:+919746369882" className="group flex min-w-0 items-center gap-4 text-foreground transition-colors hover:text-primary">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-border/80 bg-foreground/[0.03] transition-colors group-hover:bg-primary/15">
                 <Phone className="w-5 h-5 text-primary" />
               </div>
-              +91 9746369882
+              <span className="text-base font-semibold md:text-lg">
+                +91 9746369882
+              </span>
             </a>
           </div>
 
-          <div className="flex justify-center gap-6 mb-12">
+          <div className="mb-12 flex gap-3">
             <a 
               href="https://github.com/SambhuBaburaj" 
               target="_blank" 
               rel="noreferrer"
-              className="w-14 h-14 rounded-full bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 text-muted-foreground"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-border/80 bg-foreground/[0.03] text-muted-foreground transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:bg-primary hover:text-primary-foreground"
             >
               <Github className="w-6 h-6" />
               <span className="sr-only">GitHub</span>
@@ -54,7 +105,7 @@ export default function ContactSection() {
               href="https://www.linkedin.com/in/sambhu-baburaj/" 
               target="_blank" 
               rel="noreferrer"
-              className="w-14 h-14 rounded-full bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 text-muted-foreground"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-border/80 bg-foreground/[0.03] text-muted-foreground transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:bg-primary hover:text-primary-foreground"
             >
               <Linkedin className="w-6 h-6" />
               <span className="sr-only">LinkedIn</span>
@@ -63,20 +114,16 @@ export default function ContactSection() {
               href="http://instagram.com/itz_s13_/" 
               target="_blank" 
               rel="noreferrer"
-              className="w-14 h-14 rounded-full bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 text-muted-foreground"
+              className="flex h-12 w-12 items-center justify-center rounded-full border border-border/80 bg-foreground/[0.03] text-muted-foreground transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:bg-primary hover:text-primary-foreground"
             >
               <Instagram className="w-6 h-6" />
               <span className="sr-only">Instagram</span>
             </a>
           </div>
 
-          {/* Animated Gradient Border Button */}
-          <div className="relative inline-block group">
-            <div className="absolute -inset-1 bg-linear-to-r from-primary via-secondary-foreground to-primary rounded-full blur opacity-50 group-hover:opacity-100 animate-pulse transition duration-1000 group-hover:duration-200" />
-            <a href="mailto:sambhubaburaj513@gmail.com" className="relative px-8 py-4 bg-background border border-border/50 text-foreground font-semibold rounded-full inline-flex items-center gap-3 transition-colors hover:text-primary">
-              Let's Build Something Together <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </a>
-          </div>
+          <a href="mailto:sambhubaburaj513@gmail.com" className="inline-flex items-center gap-3 rounded-full bg-primary px-7 py-4 font-semibold text-primary-foreground transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/25">
+            Start a Conversation <ArrowRight className="w-5 h-5" />
+          </a>
         </motion.div>
       </div>
     </section>

@@ -1,73 +1,107 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import HeroCanvas from "./HeroCanvas";
 import Typewriter from "./Typewriter";
 import { Button } from "@/components/ui/button";
 
 export default function HeroSection() {
-  const ref = useRef(null);
+  const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
-
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({
-        x: e.clientX,
-        y: e.clientY,
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  const canvasY = useTransform(scrollYProgress, [0, 1], ["-8%", "34%"]);
+  const canvasScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.32]);
+  const canvasOpacity = useTransform(scrollYProgress, [0, 0.75, 1], [1, 0.72, 0]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -170]);
+  const contentScale = useTransform(scrollYProgress, [0, 1], [1, 0.84]);
+  const gridY = useTransform(scrollYProgress, [0, 1], [0, 190]);
+  const slabY = useTransform(scrollYProgress, [0, 1], [-80, 230]);
+  const slabX = useTransform(scrollYProgress, [0, 1], ["-12%", "9%"]);
+  const outlineY = useTransform(scrollYProgress, [0, 1], [120, -180]);
+  const railX = useTransform(scrollYProgress, [0, 1], ["-14%", "16%"]);
 
   return (
-    <section ref={ref} className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-background">
-      <motion.div style={{ y: yBg, opacity }} className="absolute inset-0 z-0">
+    <section
+      ref={ref}
+      className="relative flex min-h-[100svh] w-full items-center justify-center overflow-hidden parallax-surface"
+    >
+      <motion.div
+        style={{ y: canvasY, scale: canvasScale, opacity: canvasOpacity }}
+        className="absolute inset-0 z-0"
+      >
         <HeroCanvas />
       </motion.div>
 
-      {/* Interactive Glow tracking mouse */}
       <motion.div
-        className="pointer-events-none absolute inset-0 z-0 opacity-40 transition-opacity duration-300"
-        style={{
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(59, 130, 246, 0.15), transparent 40%)`,
-        }}
+        aria-hidden="true"
+        className="section-grid scanline-mask absolute inset-0 z-0 opacity-35"
+        style={{ y: gridY }}
       />
 
-      <div className="z-10 flex flex-col items-center text-center px-4 max-w-4xl pt-20">
+      <motion.div
+        aria-hidden="true"
+        className="absolute left-[-18vw] top-[18vh] z-0 h-32 w-[90vw] -rotate-6 border-y border-primary/25 bg-linear-to-r from-transparent via-primary/15 to-transparent"
+        style={{ x: slabX, y: slabY }}
+      />
+
+      <motion.div
+        aria-hidden="true"
+        className="absolute right-[-16vw] top-[52vh] z-0 h-24 w-[74vw] rotate-6 border-y border-secondary-foreground/25 bg-linear-to-r from-transparent via-secondary-foreground/12 to-transparent"
+        style={{ x: railX }}
+      />
+
+      <motion.div
+        aria-hidden="true"
+        className="absolute bottom-[-3vw] left-1/2 z-0 -translate-x-1/2 font-outfit text-[24vw] font-black uppercase leading-none tracking-normal text-outline text-transparent text-foreground opacity-[0.055]"
+        style={{ y: outlineY }}
+      >
+        Sambhu
+      </motion.div>
+
+      <motion.div
+        style={{ y: contentY, scale: contentScale }}
+        className="relative z-10 flex max-w-5xl origin-center flex-col items-center px-4 pt-20 text-center"
+      >
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-lg md:text-2xl text-muted-foreground mb-4 font-inter"
+          className="mb-5 font-mono text-xs uppercase tracking-[0.36em] text-primary md:text-sm"
         >
-          Full Stack Developer crafting scalable digital experiences.
+          Full Stack Developer / Real-Time Systems
         </motion.p>
         
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="text-5xl md:text-7xl font-bold tracking-tight mb-2 font-outfit"
+          className="mb-4 text-balance font-outfit text-[clamp(4.5rem,13vw,12rem)] font-black uppercase leading-[0.82] tracking-normal"
         >
-          Hi, I'm <span className="bg-clip-text text-transparent bg-linear-to-r from-primary to-secondary-foreground">Sambhu</span>.
+          Sambhu
+          <span className="block bg-linear-to-r from-primary via-secondary-foreground to-accent-foreground bg-clip-text text-transparent">
+            Baburaj
+          </span>
         </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.75, delay: 0.36, ease: "easeOut" }}
+          className="max-w-2xl text-pretty text-lg leading-8 text-muted-foreground md:text-xl"
+        >
+          I build fast product interfaces, real-time workflows, and scalable
+          dashboards that stay dependable when the requirements get messy.
+        </motion.p>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="w-full"
+          className="mt-7 w-full"
         >
           <Typewriter />
         </motion.div>
@@ -76,26 +110,16 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-          className="flex flex-col sm:flex-row gap-4 mt-12"
+          className="mt-12 flex flex-col gap-4 sm:flex-row"
         >
-          <Button size="lg" className="rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all hover:scale-105" asChild>
+          <Button size="lg" className="rounded-full shadow-lg shadow-primary/20 transition-all hover:-translate-y-1 hover:shadow-primary/40" asChild>
             <a href="#experience">View Impact</a>
           </Button>
-          <Button size="lg" variant="ghost" className="rounded-full hover:bg-white/5 transition-all hover:scale-105 border border-border/10" asChild>
+          <Button size="lg" variant="ghost" className="rounded-full border border-border/50 transition-all hover:-translate-y-1 hover:bg-white/5" asChild>
             <a href="#contact">Contact Me</a>
           </Button>
         </motion.div>
-      </div>
-
-      {/* Decorative Parallax Orbs */}
-      <motion.div 
-        style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "100%"]) }}
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px] opacity-50 mix-blend-screen pointer-events-none" 
-      />
-      <motion.div 
-        style={{ y: useTransform(scrollYProgress, [0, 1], ["0%", "-50%"]) }}
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-foreground/10 rounded-full blur-[100px] opacity-50 mix-blend-screen pointer-events-none" 
-      />
+      </motion.div>
     </section>
   );
 }

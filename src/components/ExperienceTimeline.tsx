@@ -23,7 +23,7 @@ const experiences = [
       </>
     ),
     tech: ["Next.js", "GraphQL", "TanStack", "WebSockets"],
-    color: "from-blue-500/10 to-transparent",
+    color: "from-primary/12 via-transparent to-transparent",
     align: "left",
   },
   {
@@ -45,7 +45,7 @@ const experiences = [
       </>
     ),
     tech: ["React", "Firebase", "Node.js", "Zoom API"],
-    color: "from-violet-500/10 to-transparent",
+    color: "from-secondary-foreground/12 via-transparent to-transparent",
     align: "right",
   },
   {
@@ -67,7 +67,7 @@ const experiences = [
       </>
     ),
     tech: ["MongoDB", "Express", "React", "Node.js", "AWS", "Socket.IO"],
-    color: "from-indigo-500/10 to-transparent",
+    color: "from-accent-foreground/12 via-transparent to-transparent",
     align: "left",
   },
 ];
@@ -90,38 +90,76 @@ const ExperienceBlock = ({
   
   const opacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
   const x = useTransform(scrollYProgress, [0, 1], [xOffset, 0]);
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const y = useTransform(scrollYProgress, [0, 1], [90, -40]);
+  const numberY = useTransform(scrollYProgress, [0, 1], [130, -130]);
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["-16%", "34%"]);
+  const railX = useTransform(
+    scrollYProgress,
+    [0, 1],
+    exp.align === "left" ? ["-18%", "10%"] : ["12%", "-18%"],
+  );
+  const ruleScale = useTransform(scrollYProgress, [0.15, 0.78], [0, 1]);
 
   return (
     <div 
       ref={ref} 
-      className={`relative min-h-[60vh] flex items-center w-full overflow-hidden py-24 border-t border-zinc-900 ${exp.align === "left" ? "justify-start" : "justify-end"}`}
+      className={`relative flex min-h-[76vh] w-full items-center overflow-hidden border-t border-border/70 py-24 ${exp.align === "left" ? "justify-start" : "justify-end"}`}
     >
       <motion.div 
-        className={`absolute inset-0 bg-linear-to-b ${exp.color} -z-10`}
+        className={`absolute inset-x-0 top-[-18%] h-[140%] bg-linear-to-b ${exp.color} -z-10`}
         style={{ y: backgroundY }}
+      />
+
+      <motion.div
+        aria-hidden="true"
+        className="fine-grid absolute inset-0 z-0 opacity-25"
+        style={{ y: numberY }}
+      />
+
+      <motion.div
+        aria-hidden="true"
+        className={`absolute top-8 z-0 font-outfit text-[34vw] font-black leading-none tracking-normal text-outline text-transparent opacity-[0.07] md:text-[22vw] ${
+          exp.align === "right" ? "left-4 text-secondary-foreground" : "right-4 text-primary"
+        }`}
+        style={{ y: numberY }}
+      >
+        0{index + 1}
+      </motion.div>
+
+      <motion.div
+        aria-hidden="true"
+        className="absolute left-[-14vw] top-[46%] z-0 h-px w-[128vw] bg-linear-to-r from-transparent via-foreground/20 to-transparent"
+        style={{ x: railX }}
       />
       
       <div className="container mx-auto px-6 relative z-10">
         <motion.div 
-          style={{ opacity, x }}
+          style={{ opacity, x, y }}
           className={`max-w-3xl flex flex-col gap-6 ${exp.align === "right" ? "ml-auto" : ""}`}
         >
           <div className="flex flex-col gap-2 relative">
-            <span className="text-sm font-mono tracking-widest text-zinc-500 uppercase">{exp.duration} &mdash; {exp.location}</span>
-            <h3 className="text-5xl md:text-7xl font-bold tracking-tight text-white mix-blend-difference">{exp.company}</h3>
-            <h4 className="text-2xl md:text-3xl font-light text-zinc-300">{exp.role}</h4>
+            <span className="text-sm font-mono tracking-widest text-muted-foreground uppercase">{exp.duration} / {exp.location}</span>
+            <h3 className="text-balance font-outfit text-5xl font-black uppercase leading-[0.92] tracking-normal text-foreground md:text-7xl">{exp.company}</h3>
+            <h4 className="text-2xl md:text-3xl font-light text-foreground/75">{exp.role}</h4>
           </div>
 
-          <div className="h-px w-full max-w-sm bg-zinc-800" />
+          <motion.div
+            aria-hidden="true"
+            className={`h-px w-full max-w-sm origin-left bg-linear-to-r ${
+              exp.align === "right"
+                ? "from-secondary-foreground to-transparent lg:ml-auto lg:origin-right"
+                : "from-primary to-transparent"
+            }`}
+            style={{ scaleX: ruleScale }}
+          />
           
-          <div className="text-lg text-zinc-400 leading-relaxed max-w-2xl">
+          <div className="max-w-2xl text-lg leading-relaxed text-muted-foreground">
             {exp.content}
           </div>
 
           <div className="flex flex-wrap gap-3 mt-6">
             {exp.tech.map((t, i) => (
-              <span key={i} className="px-4 py-2 text-sm rounded-full border border-zinc-700 bg-zinc-900/50 text-zinc-300">
+              <span key={i} className="rounded-full border border-border/80 bg-foreground/[0.04] px-4 py-2 font-mono text-xs uppercase tracking-[0.16em] text-foreground/75">
                 {t}
               </span>
             ))}
@@ -133,12 +171,37 @@ const ExperienceBlock = ({
 };
 
 export default function ExperienceTimeline() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const headingY = useTransform(scrollYProgress, [0, 0.35], [120, 0]);
+  const outlineY = useTransform(scrollYProgress, [0, 1], [120, -180]);
+
   return (
-    <section className="relative w-full flex flex-col pt-32 pb-16 bg-background" id="experience">
-      <div className="container mx-auto px-6 mb-24">
-        <h2 className="text-5xl md:text-7xl font-bold tracking-tighter mix-blend-difference">
-          Where I Built <span className="text-violet-500">Impact.</span>
+    <section
+      ref={sectionRef}
+      className="relative flex w-full flex-col overflow-hidden parallax-surface pb-16 pt-32"
+      id="experience"
+    >
+      <motion.div
+        aria-hidden="true"
+        className="absolute right-[-10vw] top-6 font-outfit text-[18vw] font-black uppercase leading-none tracking-normal text-outline text-transparent text-accent-foreground opacity-[0.06]"
+        style={{ y: outlineY }}
+      >
+        Work
+      </motion.div>
+
+      <div className="container relative z-10 mx-auto mb-24 px-6">
+        <motion.div style={{ y: headingY }} className="max-w-5xl">
+          <p className="mb-5 font-mono text-xs uppercase tracking-[0.34em] text-primary">
+            Experience
+          </p>
+          <h2 className="text-balance font-outfit text-5xl font-black uppercase leading-[0.92] tracking-normal md:text-7xl">
+            Where I built <span className="text-secondary-foreground">impact.</span>
         </h2>
+        </motion.div>
       </div>
 
       <div className="flex flex-col w-full">
